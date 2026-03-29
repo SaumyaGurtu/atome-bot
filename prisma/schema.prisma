@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model BotConfig {
+  id                   String   @id @default(cuid())
+  name                 String
+  knowledgeBaseUrl     String
+  additionalGuidelines String
+  systemPrompt         String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  knowledgeChunks   KnowledgeChunk[]
+  mistakeReports    MistakeReport[]
+  correctionRules   CorrectionRule[]
+  uploadedDocuments UploadedDocument[]
+}
+
+model KnowledgeChunk {
+  id          String    @id @default(cuid())
+  botConfigId String
+  botConfig   BotConfig @relation(fields: [botConfigId], references: [id], onDelete: Cascade)
+
+  sourceUrl String
+  title     String
+  content   String
+  /// Populated by the reindex pipeline for semantic retrieval.
+  embedding Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([botConfigId])
+}
+
+model MistakeReport {
+  id          String    @id @default(cuid())
+  botConfigId String
+  botConfig   BotConfig @relation(fields: [botConfigId], references: [id], onDelete: Cascade)
+
+  userQuestion    String
+  botAnswer       String
+  userFeedback    String
+  correctedAnswer String?
+  problemType     String?
+  fixSummary      String?
+  status          String   @default("open")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([botConfigId])
+  @@index([status])
+}
+
+model CorrectionRule {
+  id          String    @id @default(cuid())
+  botConfigId String
+  botConfig   BotConfig @relation(fields: [botConfigId], references: [id], onDelete: Cascade)
+
+  triggerPattern    String
+  issueDescription  String
+  correctedGuidance String
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now())
+
+  @@index([botConfigId])
+}
+
+model UploadedDocument {
+  id          String     @id @default(cuid())
+  botConfigId String?
+  botConfig   BotConfig? @relation(fields: [botConfigId], references: [id], onDelete: SetNull)
+
+  fileName  String
+  rawText   String
+  createdAt DateTime @default(now())
+
+  @@index([botConfigId])
+}
