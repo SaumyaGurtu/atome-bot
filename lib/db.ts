@@ -2,6 +2,7 @@ import path from "node:path";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { PrismaClient } from "@/app/generated/prisma/client";
 
+
 /**
  * Reuse one Prisma instance across hot reloads in `next dev`.
  * Without this, each reload can open new DB connections until the process exits.
@@ -35,7 +36,18 @@ if (!globalForPrisma.prisma) {
 }
 
 /** App-wide Prisma client (LibSQL / SQLite). */
-export const prisma = globalForPrisma.prisma;
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    adapter: new PrismaLibSql({
+      url: resolveDatabaseUrl(),
+    }),
+    log: ["error", "warn"],
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
 
 /** Same client as `prisma` — kept for call sites that prefer a getter-style name. */
 export function getDb(): PrismaClient {
