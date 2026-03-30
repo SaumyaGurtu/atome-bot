@@ -14,41 +14,28 @@ const navLink: React.CSSProperties = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         style={{
           margin: 0,
           fontFamily: "system-ui, Segoe UI, sans-serif",
           background: "#fafafa",
           color: "#111",
-          minHeight: "100vh",
         }}
       >
-        <header
-          style={{
-            borderBottom: "1px solid #ddd",
-            padding: "0.75rem 1rem",
-            background: "#fff",
-          }}
-        >
-          <strong style={{ marginRight: "1.5rem" }}>atome-bot</strong>
-          <nav style={{ display: "inline" }}>
-            <a href="/" style={navLink}>
-              Customer Bot
-            </a>
-            <a href="/admin" style={navLink}>
-              Admin
-            </a>
-            <a href="/manager" style={navLink}>
-              Manager
-            </a>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: 24 }}>
+          <nav style={{ display: "flex", gap: 16, marginBottom: 24 }}>
+            <a href="/">Customer Bot</a>
+            <a href="/admin">Admin</a>
+            <a href="/manager">Manager</a>
           </nav>
-        </header>
-        <div style={{ padding: "1rem", maxWidth: "52rem" }}>{children}</div>
+          {children}
+        </div>
       </body>
     </html>
   );
