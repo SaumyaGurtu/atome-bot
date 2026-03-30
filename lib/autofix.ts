@@ -180,7 +180,7 @@ export async function getRelevantCorrectionRules(
     orderBy: { createdAt: "desc" },
   });
 
-  return rules.filter((r) => matchesTrigger(query, r.triggerPattern));
+  return rules.filter((r: { triggerPattern: string }) => matchesTrigger(query, r.triggerPattern));
 }
 
 /** Compact block for system prompts (demo). */
