@@ -186,5 +186,5 @@ The focus was on building a **usable, extensible, and explainable system**, rath
 
 ## Demo & Repository
 
-Demo: https://your-vercel-link.vercel.app  
+Demo: https://atome-bot-assessment.vercel.app/
 Repository: https://github.com/SaumyaGurtu/atome-bot.git
