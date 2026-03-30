@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       where: { id: report.id },
       data: {
         problemType: fix.problemType,
-        fixSummary: fix.fixSummary,
+        fixSummary: fix.rule.correctedGuidance,
         status: "fixed",
       },
     });
